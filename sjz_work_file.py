@@ -1,11 +1,11 @@
 from db_api.DataQueryApis.GetTeacherInfoApis import *
 from gpt_utils import get_answer_from_gpt
 from glm_utils import get_answer_from_glm
-
+import os
 from search_pdf_utils import SemanticSearch, load_recommender #引入相关的工具
 
 recommender_1 = SemanticSearch()
-pdf_path = 'references\\试卷无法解压怎么办.pdf'
+pdf_path = os.path.join('references','marking.pdf')
 load_recommender(recommender_1, pdf_path)
 
 USE_TOPN_CHUNK = 2

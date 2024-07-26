@@ -11,7 +11,11 @@ import regex as re
 from sklearn.neighbors import NearestNeighbors
 class SemanticSearch:
     def __init__(self):
-        self.use = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual/3")
+        if os.path.exists('./universal-sentence-encoder-multilingual'):
+            self.use = hub.load('./universal-sentence-encoder-multilingual')
+        else:
+            print('Directly download from web. If this is not your intention, please place the model at ./universal-sentence-encoder-multilingual')
+            self.use = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual/3")
         self.fitted = False
     
     def fit(self, data, batch=600, n_neighbors=4):

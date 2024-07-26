@@ -1,7 +1,9 @@
 # General
 **/__pycache__/*
+universal-sentence-encoder-multilingual/*
 
 # ZHH
 # wheels
 tensorflow2.10.0/*
 tensorflow2.10.0_whls.tar.gz
+model.zip
