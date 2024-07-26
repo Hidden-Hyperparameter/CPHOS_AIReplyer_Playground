@@ -12,12 +12,13 @@ recommender_dict = dict(
     E = SemanticSearch(),
     F = SemanticSearch(),
 )
-load_recommender(recommender_dict['A'], os.path.join('references','marking.pdf'))
-load_recommender(recommender_dict['B'], os.path.join('references','identity_change.pdf'))
+dir_path = os.path.dirname(os.path.realpath(__file__))
+load_recommender(recommender_dict['A'], os.path.join(dir_path,'references','marking.pdf'))
+load_recommender(recommender_dict['B'], os.path.join(dir_path,'references','identity_change.pdf'))
 # load_recommender(recommender_dict['C'], os.path.join('references','试题传输问题.pdf')) # I can't find the file.
-load_recommender(recommender_dict['D'], os.path.join('references','exam_related_problems.pdf'))
-load_recommender(recommender_dict['E'], os.path.join('references','school_teacher_miniprogram_guide_230323.pdf'))
-load_recommender(recommender_dict['F'], os.path.join('references','marking.pdf'))
+load_recommender(recommender_dict['D'], os.path.join(dir_path,'references','exam_related_problems.pdf'))
+load_recommender(recommender_dict['E'], os.path.join(dir_path,'references','school_teacher_miniprogram_guide_230323.pdf'))
+load_recommender(recommender_dict['F'], os.path.join(dir_path,'references','marking.pdf'))
 def remove_others(x):
     if 'A' in x:
         return 'A'

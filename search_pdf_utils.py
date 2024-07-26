@@ -11,8 +11,12 @@ import regex as re
 from sklearn.neighbors import NearestNeighbors
 class SemanticSearch:
     def __init__(self):
-        if os.path.exists('./universal-sentence-encoder-multilingual'):
-            self.use = hub.load('./universal-sentence-encoder-multilingual')
+        try_dirs = os.walk('..')
+        names = [i[0] for i in try_dirs]
+        found = any(['universal-sentence-encoder-multilingual' in n for n in names])
+        if found:
+            use_path = [n for n in names if n.strip('/').endswith('universal-sentence-encoder-multilingual')][0]
+            self.use = hub.load(use_path)
         else:
             print('Directly download from web. If this is not your intention, please place the model at ./universal-sentence-encoder-multilingual')
             self.use = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual/3")
