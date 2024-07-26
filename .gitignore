@@ -1,0 +1,7 @@
+# General
+**/__pycache__/*
+
+# ZHH
+# wheels
+tensorflow2.10.0/*
+tensorflow2.10.0_whls.tar.gz

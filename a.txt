@@ -1,0 +1,12 @@
+CustomTransaction init
+Please enter the following database information:
+host: 47.94.223.188
+port: 3306
+user: dz161_2
+db: dz161_2
+Connect to database successfully.
+The tables in the database are:
+(('cmf_admin_menu',), ('cmf_asset',), ('cmf_auth_access',), ('cmf_auth_rule',), ('cmf_comment',), ('cmf_hook',), ('cmf_hook_plugin',), ('cmf_link',), ('cmf_nav',), ('cmf_nav_menu',), ('cmf_option',), ('cmf_plugin',), ('cmf_recycle_bin',), ('cmf_role',), ('cmf_role_user',), ('cmf_route',), ('cmf_slide',), ('cmf_slide_item',), ('cmf_theme',), ('cmf_theme_file',), ('cmf_third_party_user',), ('cmf_tp_arbitrator',), ('cmf_tp_area',), ('cmf_tp_correct',), ('cmf_tp_exam',), ('cmf_tp_grade',), ('cmf_tp_member',), ('cmf_tp_prize',), ('cmf_tp_record',), ('cmf_tp_school',), ('cmf_tp_set',), ('cmf_tp_student',), ('cmf_tp_subject',), ('cmf_tp_test_paper',), ('cmf_tp_topic',), ('cmf_user',), ('cmf_user_action',), ('cmf_user_action_log',), ('cmf_user_balance_log',), ('cmf_user_favorite',), ('cmf_user_like',), ('cmf_user_login_attempt',), ('cmf_user_score_log',), ('cmf_user_token',), ('cmf_verification_code',))
+Notice that you have not rollBack or commited the transaction yet.
+Quit without commiting. Roll back.
+You must call customTransaction.commit() to commit your changes.
