@@ -4,7 +4,7 @@ import fitz
 # import re
 import numpy as np
 import sys,os
-
+from .utils.logger import logger
 import tensorflow_hub as hub
 import tensorflow_text
 
@@ -21,7 +21,7 @@ class SemanticSearch:
             use_path = [n for n in names if n.strip('/').endswith('universal-sentence-encoder-multilingual')][0]
             self.use = hub.load(use_path)
         else:
-            print('Directly download from web. If this is not your intention, please place the model at ./universal-sentence-encoder-multilingual')
+            logger.warn('Directly download from web. If this is not your intention, please place the model at ./universal-sentence-encoder-multilingual')
             self.use = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual/3")
         self.fitted = False
     

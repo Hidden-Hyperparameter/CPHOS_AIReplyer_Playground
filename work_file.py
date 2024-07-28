@@ -50,6 +50,7 @@ def answer_user_question(user_wechat_nickname, user_question,max_try=5):
         print('-'*20)
         logger.info(f'[CPHOS Model], User: {user_wechat_nickname}, Question: {user_question}')
         state = GetUserState(user_wechat_nickname)
+        logger.info(f'[CPHOS Model][Run] The user is {state}')
         if state == '不在系统中':
             sql_prompt = '该用户“不在系统中”，尚未提交审核，所以没有通过。无法提交试卷、阅卷、也无法完成领队或者副领队相关操作。该用户未按要求在报名时登陆，因此尚未提交审核。'
         elif state == '待审核':
@@ -74,7 +75,7 @@ def answer_user_question(user_wechat_nickname, user_question,max_try=5):
                 answer_added = ''
             class_ = classification_whole(user_question,added_prompt).replace(' ','').replace('。','')
             class_ = remove_others(class_)
-            logger.info('[CPHOS Model][Run] Classifier (Whole): '+class_)
+            logger.debug('[CPHOS Model][Run] Primary Classifier Result: '+class_)
             execution_dict = None
             if class_ == 'A':
                 # answer = '您当前微信号的审核应当已经通过了！'
@@ -84,7 +85,7 @@ def answer_user_question(user_wechat_nickname, user_question,max_try=5):
                 # class_ = 'B'
             if class_ == 'B':
                 question_class = classification_question(user_question,added_prompt)
-                logger.info('[CPHOS Model][Run] Classifier (Question): ' + question_class)
+                logger.info('[CPHOS Model][Run] Secondary Classifier Result: ' + question_class)
                 if question_class == 'G':   
                     answer = '非常抱歉，您的问题与我们的AI客服无法回答，请您联系人工客服。'
                 else:
@@ -99,24 +100,23 @@ def answer_user_question(user_wechat_nickname, user_question,max_try=5):
                            
             if class_ == 'C':
                 answer = '非常抱歉，您的问题与我们小程序的功能无关。如果您有关于小程序的任何疑问或需要帮助，我们将尽力为您提供支持。感谢您的理解。'
-            logger.info('[CPHOS Model][Run] Executer: ' + answer)
+            logger.info(f'[CPHOS Model][Run] Result for round {cycle_times+1} : ' + answer)
             verifier_result, new_verifier_reason = verification(user_question, answer, added_prompt)
-            answer_InvalidReason_list.append((user_question, new_verifier_reason))
+            if answer not in [x for x,_ in answer_InvalidReason_list]:
+                answer_InvalidReason_list.append((answer, new_verifier_reason))
             answer = answer_added + answer
             if verifier_result:   
                 if execution_dict is not None:
+                    returned = ''
                     if execution_dict['instruction_name'] is not None:
                         try:
                             returned = mysql_execute(execution_dict['instruction_name'],execution_dict['args'],user_wechat_nickname)
                             # print(returned)
                         except Exception as e:
                             answer = answer + '。但是执行指令时出现了错误：' + str(e)        
-                            logger.info('[CPHOS Model][Run] answer is: ', answer)
                             return answer
                     answer = '执行成功了如下的指令：' + execution_dict['discription'] + '，结果为：' + returned
-                logger.info('[CPHOS Model][Run] answer is: '+ answer)
                 return answer
-            print('[CPHOS Model][Run] answer is: ', answer)
             
             cycle_times += 1
             if cycle_times >= max_try:
