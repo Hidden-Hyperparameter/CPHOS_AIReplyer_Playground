@@ -77,9 +77,9 @@ def execute_instruction(instruction, added_prompt = ''):
 ### 具体规则
 
 1. 你需要从以下的3个指令中选择最契合用户要求的指令：
-    - Instruction: ChangeAllTypesMarkingSubject；功能: 修改老师的批阅题目；Args：题目号(int)。
-    - Instruction: GetTeacherNotViewedProblemNumber；功能: 得到老师未批的题目；Args：无。
-    - Instruction: VerifyTeacherUserToBeSupTeacher；功能: 完成老师的审核；Args：姓名(str)，学校(str)。
+    - Instruction: ChangeAllTypesMarkingSubject；功能: 修改用户的批阅题目；Args：题目号(int)。
+    - Instruction: GetTeacherNotViewedProblemNumber；功能: 得到用户未批的题目；Args：无。
+    - Instruction: VerifyTeacherUserToBeSupTeacher；功能: 审核用户是否为副教练；Args：姓名(str)，学校(str)。
 2. 如果有Args无法给出或者指令不在以上列出的三条指令中，请用?代替。
 3. 对于Args为“无”的情形，你必须使用Args=?的格式。
 
@@ -124,7 +124,7 @@ def execute_instruction(instruction, added_prompt = ''):
             return dict(
                 instruction_name = None,
                 args = None,
-                discription = '修改老师的批阅题目，但题目号未给出'
+                discription = '修改老师的批阅题目，但题目号未给出。'
             )
         return dict(
             instruction_name = instruction,
@@ -153,70 +153,63 @@ def execute_instruction(instruction, added_prompt = ''):
     
 def classification_whole(question,added_prompt):
                 # retry: no C.
-    my_prompt = """### 你的任务
+    raise DeprecationWarning('We no longer use it.')
 
-你是一个考试的数据库的管理者。你的数据库包含的内容有：
-- 每一位领队和副领队批改的题目编号，已经批改和尚未批改的题目数量；
-- 每一个领队具有的副领队；
-- 每一个领队具有的学生信息。
+def choose_better_ans(question,answer_A,answer_B):
+    ans_a_1line = answer_A.replace('\n','')
+    ans_b_1line = answer_B.replace('\n','')
+    prompt = f"""### 你的任务
 
-同时，你还有一系列文档。这些文档包含了大量的方法（如何添加副领队，如何添加学生信息等），但不包含你的数据库内的数据。
+你是一个评价家(critic)，你将被给予一个问题和两个回答。你需要选择出更好的回答。你必须遵循以下的具体规则和格式要求。
 
-有时，用户只是向你询问某操作的执行方式，这时你无需调用你的数据库，只需要通过文档就可以回答用户的问题；但有时，用户希望执行某操作，这时你必须调用你的数据库。
-
-现在，你接收到一个用户的指示，你需要判断这一用户是否应该访问你的数据库。
+你会收到回答1和回答2。回答1是一位技术专家的回答，他执行一系列程序，得到结果，也可能出现错误；回答2是一位客服人员的回答，他从他的文档资料内获取信息，但也可能无法解决问题。
 
 ### 具体规则
 
-- 如果你认为用户的指示对应一个需要和你的数据库交互的具体操作，那么回答字母A；
-- 如果你认为可以只通过文档解释就可以回应用户，不需要访问你的数据库，那么回答字母B；
-- 如果你感到纠结，为了保护你的数据库，回答字母B。
-
-### 技巧
-
-以下技巧可以帮助你判断：
-- 如果用户明确给出一个操作，或者作出命令，那么他需要和你的数据库交互；
-- 如果用户的语气是询问的，并且不涉及数据访问，那么很有可能他不需要和你的数据库交互。
+- 如果回答2没有解决用户的问题，而回答1解决了，你必须选择回答1；
+- 如果回答1和用户的问题无关，那么你必须选择回答2。
+- 在任何情况下，你必须给出一个理由，根据理由作出决定。
 
 ### 格式要求
 
-你需要分两行给出你的结果：在第一行，给出“你的思考”；在第二行，给出“你的回答”。
+你需要在第一行给出你的理由，在第二行给出你的答案。参考下面的示例回答。
 
 ### 示例回答
 
 你可以参考以下的示例回答，以确保你对前面所述具体规则与格式要求的理解无误。
 
-*** 示例1
->>> 用户：怎么添加副领队？
->>> 你的思考：用户的语气在询问：“怎么添加”。这不是一个操作，因此我无需访问数据库。
->>> 你的回答：B
+*** 样例1
+Q: 我是副领队吗？
+A1: 执行成功了如下的指令：审核老师是否为副领队，姓名为王华，结果为：True。
+A2: 副领队在阅卷过程中会被分配到比领队更少的试卷，但一个领队通常可以拥有多个副领队。
+你的理由：回答1执行了指令，得到了结果，并且和用户问题匹配；回答2虽然提供了信息，但是和用户问题关系也不大。
+你的答案：1
 
-*** 示例2
->>> 用户：我希望添加一位副领队。
->>> 你的思考：用户明确指出一个操作——希望添加一位副领队。这需要和我的数据库交互。
->>> 你的回答：A
+*** 样例2
+Q: 我该如何阅卷？
+A1: 我试着把你的回答理解为指令，但是发现了一个问题：修改老师的批阅题目，但题目号未给出。
+A2: 请您在小程序里点击“阅卷”按钮，然后选择您要阅卷的试卷，然后点击“开始阅卷”。
+你的理由：回答2解决了用户的问题；回答1虽然运行了指令，但没有解决用户的问题。
+你的答案：2
 
-*** 示例3
->>> 用户：我还有多少题没批？
->>> 你的思考：虽然用户提出了一个问题，但是这一问题对应一个数据，我无法在文档找到。因此，需要和我的数据库交互。
->>> 你的回答：A
-
-*** 示例4
->>> 用户：怎么添加学生信息？为什么我添加不了学生信息？
->>> 你的思考：用户在询问添加学生信息的方法。这不需要和我的数据库交互，我可以通过文档回答。
->>> 你的回答：B
-
-### 下面，任务正式开始。"""
-
-    my_prompt += f"\n\n*** 最终问答\n>>> 用户：{question}\n>>> 你的思考："
-
-    engine = CLASSIFIER_ENGINE # or 'chatglm_6b'
-    answer = get_answer(my_prompt, engine,role='\033[33mPrimary Classifier\033[0m')
-    answer = answer.replace('\"','').replace('\'','').replace(' ','').replace('\n','').replace('\t','').replace('  ','')
-    answer = [c for c in answer if c in 'AB']
-    if len(answer): return answer[-1]
-    logger.warn(f'[CPHOS Model][Run] \033[33mPrimary Classifier\033[0m cannot determine. Its output: {answer}')
-    return 'B' # 'A' is more dangerous, so we choose 'B' as default.
+### 下面，任务正式开始。
+Q: {question}
+A1: {ans_a_1line}
+A2: {ans_b_1line}
+你的理由：
+"""
+    decision:str = get_answer(prompt, EXECUTER_ENGINE ,role='\033[35mChooser\033[0m')
+    try:
+        i1 = decision.rfind('1')
+        i2 = decision.rfind('2')
+        if i1 == i2: raise Exception('No decision')
+        if i2 == -1 or i1 > i2:
+            return answer_A
+        elif i1 == -1 or i2 > i1:
+            return answer_B
+    except:
+        pass
+    return '很抱歉🥺，我们的AI回复系统无法回复您的问题。请您联系我们的人工客服，我们将尽力为您提供支持。感谢您的理解。'
 
 def verification(question, answer, added_prompt):
 
@@ -255,11 +248,6 @@ Q: 我还有多少没批的题目？
 A: 执行成功了如下的指令：得到老师未批的题目数目，结果为：10。
 你的答案: 是|||这是合理的回答，因为提问者问的是如何添加学生信息，回答是状态是待审核，并且解释了需要审核通过才能添加学生信息。
 
-*** 样例4
-Q: 把我换成第四题阅卷人。
-A: 根据您的状态和问题，以下是有效回答您问题的部分总结：1. 如果您没有上传试卷却收到阅卷任务，这是因为您的团队中有领队或其他副领队已经上传了试卷，阅卷任务是共享的。
-你的答案：否|||这是不合理的回答，因为提问者问的是要对他的批阅题号做出变更，而回答者完全没有提及这一操作。
-
 ### 下面，任务正式开始。
 
 ***最终问答
@@ -276,14 +264,7 @@ A: {ans_in_one_line}
         return False, answer.split('|||')[-1]
 
 def process_one_chunk(chunk:str):
-    """extract the quotation"""
-    try:
-        s = chunk[chunk.find('"')+1:chunk.rfind('"')]
-    except:
-        s = chunk
-    i = 0
-    while s[i] in ' 1234567890': i+=1
-    return s[i:]
+    return chunk
 
 def summarization(question, topn_chunks, state,added_prompt):
 
@@ -304,13 +285,6 @@ def summarization(question, topn_chunks, state,added_prompt):
 
 在接下来的任务中，你必须输出一份好的回答，并且不可以输出上述不好的回答。你的回答不应该以“好的回答”这四个汉字开始。
 
-### 建议
-
-你可以参考以下的建议，但不能为了它们而不遵守上述回答要求：
-
-1. 恰当地使用换行符。在同一行书写太长会使人不适。
-2. 你的回答要全面。比如，如果人工客服给出了三个解决方案，你需要同时汇报这三个方案。
-
 ### 问题
 
 {question}"""
@@ -324,7 +298,7 @@ def summarization(question, topn_chunks, state,added_prompt):
     my_prompt += added_prompt
     my_prompt += "\n\n### 你的回答\n\n我的总结如下："
     engine = EXECUTER_ENGINE # or 'chatglm_6b'
-    answer = get_answer(my_prompt, engine,role='Summarizer')
+    answer = get_answer(my_prompt, engine,role='\033[33mSummarizer\033[0m')
     
     return answer
 
