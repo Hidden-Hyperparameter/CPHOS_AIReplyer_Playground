@@ -2,7 +2,7 @@
 
 from .work_file import answer_user_question
 import os
-TRY_NUM = 1
+TRY_NUM = 2
 
 nickname_and_question_list = []
 with open(os.path.join(os.path.dirname(__file__),'frequent_requests/questions.txt'), 'r', encoding='utf-8') as f:

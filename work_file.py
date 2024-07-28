@@ -41,7 +41,7 @@ def remove_others(x):
     else:
         return 'aonaweofkdj'
 
-def answer_user_question(user_wechat_nickname, user_question,max_try=1):
+def answer_user_question(user_wechat_nickname, user_question,max_try=5):
     # try:
         # ---------------------------------- TODO ---------------------------------------
         # TODO: fill in here to answer user's question.
