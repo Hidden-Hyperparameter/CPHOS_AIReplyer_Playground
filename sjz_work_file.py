@@ -10,15 +10,14 @@ load_recommender(recommender_1, pdf_path)
 
 USE_TOPN_CHUNK = 2
 
-GPT_API_KEY = ['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',]
-GLM_API_KEY = '76ac5e2039ac8a8da4bd924957e03b20.kJAQi8ptu0ynObZr'
+
 GLM_ENGINE = 'chatglm_std'
 # GPT_ENGINE = ['gpt-4', 'gpt-4-0314', 'gpt-4-0613']
 GPT_ENGINE = ['gpt-3.5-turbo']
 
 def answer_user_question(user_wechat_nickname, user_question, llm='gpt'):
     def get_answer(prompt):
-        return get_answer_from_glm(GLM_API_KEY, prompt, GLM_ENGINE) if llm == 'glm' else get_answer_from_gpt(GPT_API_KEY, prompt, GPT_ENGINE) if llm == 'gpt' else None
+        return get_answer_from_glm(prompt, GLM_ENGINE) if llm == 'glm' else get_answer_from_gpt(GPT_API_KEY, prompt, GPT_ENGINE) if llm == 'gpt' else None
     try:
         from db_api import customTransaction
         user_id_returned_list = customTransaction.executeOperation(GetTeacherInfoByWechatName(user_wechat_nickname))
@@ -51,7 +50,7 @@ def answer_user_question(user_wechat_nickname, user_question, llm='gpt'):
         
         prompt += '用户提问: ' + user_question + '回答: '
         
-        answer = get_answer_from_glm(GLM_API_KEY, prompt, GLM_ENGINE)
+        answer = get_answer_from_glm(prompt, GLM_ENGINE)
         # answer = get_answer_from_gpt(GPT_API_KEY, prompt, GPT_ENGINE)
         print("User",user_wechat_nickname, ", User question:", user_question)
         print("Anser", answer)
@@ -81,7 +80,7 @@ def answer_user_question(user_wechat_nickname, user_question, llm='gpt'):
         
         print("Prompt used: ", prompt)
         
-        answer = get_answer_from_glm(GLM_API_KEY, prompt, GLM_ENGINE)
+        answer = get_answer_from_glm(prompt, GLM_ENGINE)
         # answer = get_answer_from_gpt(GPT_API_KEY, prompt, GPT_ENGINE)
         print("User",user_wechat_nickname, ", User question:", user_question)
         print("Anser", answer)

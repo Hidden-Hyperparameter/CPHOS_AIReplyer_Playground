@@ -1,8 +1,10 @@
-from db_api import customTransaction
-from db_api.DataQueryApis.GetTeacherInfoApis import *
-from utils.utils import verification, classification_whole, classification_question, summarization, GetUserState, add_previous_prompts, execute_instruction, mysql_execute
-from search_pdf_utils import SemanticSearch, load_recommender 
+from .utils.utils import verification, classification_whole, classification_question, summarization, GetUserState, add_previous_prompts, execute_instruction, mysql_execute
+from .search_pdf_utils import SemanticSearch, load_recommender 
 import os
+from .utils.logger import logger
+
+from .db_api import customTransaction
+from .db_api.DataQueryApis.GetTeacherInfoApis import *
 
 recommender_dict = dict(
     A = SemanticSearch(),
@@ -15,7 +17,7 @@ recommender_dict = dict(
 dir_path = os.path.dirname(os.path.realpath(__file__))
 load_recommender(recommender_dict['A'], os.path.join(dir_path,'references','marking.pdf'))
 load_recommender(recommender_dict['B'], os.path.join(dir_path,'references','identity_change.pdf'))
-# load_recommender(recommender_dict['C'], os.path.join('references','试题传输问题.pdf')) # I can't find the file.
+load_recommender(recommender_dict['C'], os.path.join(dir_path,'references','offseason_problems.pdf'))
 load_recommender(recommender_dict['D'], os.path.join(dir_path,'references','exam_related_problems.pdf'))
 load_recommender(recommender_dict['E'], os.path.join(dir_path,'references','school_teacher_miniprogram_guide_230323.pdf'))
 load_recommender(recommender_dict['F'], os.path.join(dir_path,'references','marking.pdf'))
@@ -39,16 +41,14 @@ def remove_others(x):
     else:
         return 'aonaweofkdj'
 
-def answer_user_question(user_wechat_nickname, user_question):
+def answer_user_question(user_wechat_nickname, user_question,max_try=1):
     # try:
         # ---------------------------------- TODO ---------------------------------------
         # TODO: fill in here to answer user's question.
         # You can make new files in the /utils folder and import them here, to make this file cleaner.
         cycle_times = 0
-        print('')
-        print('-------------------------------------------------')
-        print(user_wechat_nickname+':')
-        print(user_question)
+        print('-'*20)
+        logger.info(f'[CPHOS Model], User: {user_wechat_nickname}, Question: {user_question}')
         state = GetUserState(user_wechat_nickname)
         if state == '不在系统中':
             sql_prompt = '该用户“不在系统中”，尚未提交审核，所以没有通过。无法提交试卷、阅卷、也无法完成领队或者副领队相关操作。该用户未按要求在报名时登陆，因此尚未提交审核。'
@@ -61,8 +61,7 @@ def answer_user_question(user_wechat_nickname, user_question):
             added_prompt = '注意：在数据库里，该用户的状态是：'+sql_prompt
             if len(answer_InvalidReason_list) > 0:
                 added_prompt += add_previous_prompts(answer_InvalidReason_list)
-            print("-=-=-=")
-            print(cycle_times)
+            logger.info(f'[CPHOS Model][Run] Try for the {cycle_times+1}th time...')
             if state == '不在系统中':
                 answer = '您目前这个微信号“不在系统中”，尚未提交审核，所以没有通过。无法提交试卷、阅卷、也无法完成领队或者副领队相关操作（包括添加修改学生信息等）。您未按要求在报名时登陆，因此尚未提交审核。如果您在小程序里使用的是另一个微信号，请使用该微信号向我问问题！。'
                 # return answer_added
@@ -75,7 +74,7 @@ def answer_user_question(user_wechat_nickname, user_question):
                 answer_added = ''
             class_ = classification_whole(user_question,added_prompt).replace(' ','').replace('。','')
             class_ = remove_others(class_)
-            print('Classifier (Whole): '+class_)
+            logger.info('[CPHOS Model][Run] Classifier (Whole): '+class_)
             execution_dict = None
             if class_ == 'A':
                 # answer = '您当前微信号的审核应当已经通过了！'
@@ -85,7 +84,7 @@ def answer_user_question(user_wechat_nickname, user_question):
                 # class_ = 'B'
             if class_ == 'B':
                 question_class = classification_question(user_question,added_prompt)
-                print('Classifier (Question): ' + question_class)
+                logger.info('[CPHOS Model][Run] Classifier (Question): ' + question_class)
                 if question_class == 'G':   
                     answer = '非常抱歉，您的问题与我们的AI客服无法回答，请您联系人工客服。'
                 else:
@@ -100,7 +99,7 @@ def answer_user_question(user_wechat_nickname, user_question):
                            
             if class_ == 'C':
                 answer = '非常抱歉，您的问题与我们小程序的功能无关。如果您有关于小程序的任何疑问或需要帮助，我们将尽力为您提供支持。感谢您的理解。'
-            print('Executer: ' + answer)
+            logger.info('[CPHOS Model][Run] Executer: ' + answer)
             verifier_result, new_verifier_reason = verification(user_question, answer, added_prompt)
             answer_InvalidReason_list.append((user_question, new_verifier_reason))
             answer = answer_added + answer
@@ -112,15 +111,15 @@ def answer_user_question(user_wechat_nickname, user_question):
                             # print(returned)
                         except Exception as e:
                             answer = answer + '。但是执行指令时出现了错误：' + str(e)        
-                            print('answer is: ', answer)
+                            logger.info('[CPHOS Model][Run] answer is: ', answer)
                             return answer
                     answer = '执行成功了如下的指令：' + execution_dict['discription'] + '，结果为：' + returned
-                print('answer is: ', answer)
+                logger.info('[CPHOS Model][Run] answer is: '+ answer)
                 return answer
-            print('answer is: ', answer)
+            print('[CPHOS Model][Run] answer is: ', answer)
             
             cycle_times += 1
-            if cycle_times >= 10:
+            if cycle_times >= max_try:
                 return '很抱歉，我们的AI回复系统无法回复您的问题。请您联系我们的人工客服，我们将尽力为您提供支持。感谢您的理解。'
         # ---------------------------------- TODO ---------------------------------------
     # except Exception as e:

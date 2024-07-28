@@ -3,8 +3,11 @@
 import fitz
 # import re
 import numpy as np
+import sys,os
+
 import tensorflow_hub as hub
 import tensorflow_text
+
 import gradio as gr
 import os
 import regex as re

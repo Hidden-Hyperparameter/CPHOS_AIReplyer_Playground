@@ -1,4 +1,4 @@
-from db_api import *
+from ..__init__ import *
 class GetSchoolInfoByName(CustomOperation):
     def __init__(self,Name:str):
         self.MySQLCommand = "select * from cmf_tp_school where `school_name`='{}'".format(Name)

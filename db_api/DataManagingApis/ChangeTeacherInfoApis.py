@@ -1,4 +1,4 @@
-from db_api import *
+from ..__init__ import *
 reverse_typedict={"仲裁":2,"教练":3,"负责人":1}
 
 class MakeAllTypesToBeArbiter(CustomOperation):

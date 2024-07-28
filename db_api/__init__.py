@@ -1,4 +1,5 @@
 import pymysql
+
 class CustomOperation():
     def __init__(self):
         self.MySQLCommand = None
@@ -23,7 +24,7 @@ class CustomTransaction():
         self.host = '0' # input("host:")
         if self.host == str(0):
             import os
-            with open (("db_api/dbinformation.txt")) as f:
+            with open (os.path.join(os.path.dirname(__file__),'dbinformation.txt')) as f:
                 self.host = f.readline().strip()
                 self.port = int(f.readline().strip())
                 self.user = f.readline().strip()

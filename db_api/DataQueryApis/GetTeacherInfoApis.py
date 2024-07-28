@@ -1,5 +1,5 @@
 #CustomOperation is defined in db_api\CustomOperation.py
-from db_api import *
+from ..__init__ import *
 typedict={2:'仲裁',3:'副领队',1:'领队'}
 class GetAllTeacherInfo(CustomOperation):
     def __init__(self):

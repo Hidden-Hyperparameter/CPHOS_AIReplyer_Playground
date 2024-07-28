@@ -1,9 +1,10 @@
-from glm_utils import get_answer_from_glm
-from db_api import customTransaction
-from db_api.DataQueryApis.GetTeacherInfoApis import *
-from db_api.DataManagingApis.ChangeTeacherInfoApis import *
-from db_api.DataQueryApis.GetSchoolInfoApis import *
-from gpt_utils import get_answer_from_gpt
+from ..glm_utils import get_answer_from_glm
+from ..db_api import customTransaction
+from ..db_api.DataQueryApis.GetTeacherInfoApis import *
+from ..db_api.DataManagingApis.ChangeTeacherInfoApis import *
+from ..db_api.DataQueryApis.GetSchoolInfoApis import *
+from ..gpt_utils import get_answer_from_gpt
+from ..utils.logger import logger
 
 gpt35_api_key = 'sk-DrR13CtaC3xoCSG37c9cB1D592A146Bf94E81a6b11A4C684'
 gpt4_api_key = 'sk-ixjkS5LEaPD9htwt02F28e72269d4615BdBd4b8907022624' # gpt的api key， 会发给大家
@@ -11,11 +12,11 @@ glm_api_key = '76ac5e2039ac8a8da4bd924957e03b20.kJAQi8ptu0ynObZr'
 
 def get_answer(prompt, engine):
     if 'gpt-3.5' in engine:
-        answer = get_answer_from_gpt(gpt35_api_key, prompt, engine)
+        answer = get_answer_from_gpt(prompt, engine)
     elif 'glm' in engine:
-        answer = get_answer_from_glm(glm_api_key, prompt, engine)
+        answer = get_answer_from_glm(prompt, engine)
     elif 'gpt-4' in engine:
-        answer = get_answer_from_gpt(gpt4_api_key, prompt, engine)
+        answer = get_answer_from_gpt(prompt, engine)
     return answer
 
 
@@ -71,7 +72,7 @@ def execute_instruction(instruction, added_prompt = ''):
     my_prompt += '指令：'+instruction+'生成的命令：Instruction=='
     engine = EXECUTER_ENGINE
     answer = get_answer(my_prompt, engine)
-    print(answer)
+    logger.info('[CPHOS Model][Run] '+answer)
     try:
         instruction = answer.split('|||')[0]
         args = answer.split('|||')[1].split('==')[1]
@@ -155,7 +156,7 @@ def verification(question, answer, added_prompt):
     my_prompt += added_prompt
     engine = VERIFIER_ENGINE # or 'chatglm_6b'
     answer = get_answer(my_prompt, engine).replace('\"','').replace('\'','')
-    print('Verifier: '+answer)
+    logger.info('[CPHOS Model][Run] Verifier: '+answer)
     if ('不合理' not in answer.split('|||')[1])and('否' not in answer.split('|||')[0]):
         return True, answer.split('|||')[-1]
     else:

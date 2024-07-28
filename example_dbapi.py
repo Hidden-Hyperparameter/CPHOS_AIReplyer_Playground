@@ -1,5 +1,5 @@
-from db_api import customTransaction
-from db_api.DataQueryApis.GetTeacherInfoApis import *
+from .db_api import customTransaction
+from .db_api.DataQueryApis.GetTeacherInfoApis import *
 
 
 user_wechat_nickname = '史景喆'

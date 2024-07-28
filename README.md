@@ -1,3 +1,26 @@
+# As a Package
+
+This project now become a package.
+
+```shell
+conda create -n CPHOS "python==3.8"
+conda activate CPHOS # Or source activate CPHOS
+pip install -r requirements.txt
+```
+
+Then you can use the package as follows:
+
+```shell
+cd ..
+python -m your_folder_name.test # This runs test.py in the package. If you want to run other files, you can replace test with the file name.
+```
+
+## The old README.md is as follows
+
+(**Notice** that due to the change, the code in this README may **NOT** be able to run. To run them, follow the instructions above.)
+
+# 项目简介
+
 使用的python版本为3.8.0。推荐使用conda进行包与环境的管理。
 
 使用前，请先安装对应版本的python，随后安装requirements.txt中记录的包。然后可以使用glm_utils以及gpt_utils中定义的函数来调用glm、gpt；同时，使用search_pdf_utils.py中定义的函数来调用语言模型，可以获取指定pdf中与问题语义相近的部分。这一部分pdf语义匹配的代码来自于chatpdf。

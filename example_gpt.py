@@ -1,6 +1,4 @@
-from gpt_utils import get_answer_from_gpt
-
-gpt_api_key = 'sk-DrR13CtaC3xoCSG37c9cB1D592A146Bf94E81a6b11A4C684' # gpt的api key， 会发给大家
+from .gpt_utils import get_answer_from_gpt
 
 question = '我是谁？'
 
@@ -13,6 +11,6 @@ my_prompt += '用户的问题：'+question+'回答：'
 
 engine = 'gpt-3.5-turbo' # 我们就用这个，这个很便宜（乐）
 
-answer = get_answer_from_gpt(gpt_api_key, my_prompt, engine)
+answer = get_answer_from_gpt(my_prompt, engine)
 
 print(answer)

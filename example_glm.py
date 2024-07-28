@@ -1,6 +1,4 @@
-from glm_utils import get_answer_from_glm
-
-glm_api_key = '76ac5e2039ac8a8da4bd924957e03b20.kJAQi8ptu0ynObZr'
+from .glm_utils import get_answer_from_glm
 
 question = '我是谁？'
 
@@ -13,6 +11,6 @@ my_prompt += '用户的问题：'+question+'回答：'
 
 engine = 'chatglm_pro' # or 'chatglm_6b'
 
-answer = get_answer_from_glm(glm_api_key, my_prompt, engine)
+answer = get_answer_from_glm(my_prompt, engine)
 
 print(answer)

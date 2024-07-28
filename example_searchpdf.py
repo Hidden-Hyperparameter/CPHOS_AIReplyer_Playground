@@ -2,7 +2,7 @@ import os
 
 teacher_problem_example = '我应该怎么阅卷？' #老师的问题
 
-from search_pdf_utils import SemanticSearch, load_recommender #引入相关的工具
+from .search_pdf_utils import SemanticSearch, load_recommender #引入相关的工具
 # from utils.utils import summarization
 recommender_1 = SemanticSearch()
 pdf_path = os.path.join('references','marking.pdf')
