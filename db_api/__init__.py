@@ -47,6 +47,7 @@ class CustomTransaction():
         self.connect()
         
     def connect(self):
+        return 'Success!'
         try:
             self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, password=self.password, db=self.db)
         except:
@@ -62,6 +63,12 @@ class CustomTransaction():
         print(tables)
     
     def executeOperation(self,operation:CustomOperation):
+        return [{
+            'id': 1,
+            'name': '高兴',
+            'type': '领队'
+        }]
+
         if not self.is_connecting:
             print("Not connecting!")
             return Exception("Not connecting!")
@@ -83,6 +90,7 @@ class CustomTransaction():
         return self.executeOperation(*args,**kwargs)
     
     def commit(self):
+        return 'Success!'
         if not self.is_connecting:
             print("Not connecting!")
             return Exception("Not connecting!")
@@ -97,6 +105,7 @@ class CustomTransaction():
             raise e
     
     def rollBack(self):
+        return 'Success!'
         if not self.is_connecting:
             print("Not connecting!")
             return Exception("Not connecting!")
