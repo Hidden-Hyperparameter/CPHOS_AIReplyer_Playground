@@ -8,3 +8,5 @@ tensorflow2.10.0/*
 tensorflow2.10.0_whls.tar.gz
 model.zip
 .env
+
+run_test.log

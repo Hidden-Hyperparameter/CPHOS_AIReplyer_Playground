@@ -21,8 +21,10 @@ def get_answer(prompt, engine, role=''):
 
 
 CLASSIFIER_ENGINE = 'chatglm_turbo'
-EXECUTER_ENGINE = 'gpt-3.5-turbo'
-VERIFIER_ENGINE = 'gpt-3.5-turbo'
+EXECUTER_ENGINE = 'chatglm_turbo'
+# EXECUTER_ENGINE = 'gpt-3.5-turbo'
+VERIFIER_ENGINE = 'chatglm_turbo'
+# VERIFIER_ENGINE = 'gpt-3.5-turbo'
 
 
 

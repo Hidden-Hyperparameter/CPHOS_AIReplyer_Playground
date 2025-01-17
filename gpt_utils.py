@@ -11,6 +11,7 @@ from openai import ChatCompletion
 def get_answer_from_gpt(prompt,
                         engine='gpt-3.5-turbo',
                         ):
+    raise NotImplementedError('We currently do not have OPENAI api key')
     messages = [
         {
             'role': 'user',

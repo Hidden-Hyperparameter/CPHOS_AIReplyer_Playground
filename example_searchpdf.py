@@ -5,7 +5,7 @@ teacher_problem_example = '我应该怎么阅卷？' #老师的问题
 from .search_pdf_utils import SemanticSearch, load_recommender #引入相关的工具
 # from utils.utils import summarization
 recommender_1 = SemanticSearch()
-pdf_path = os.path.join('references','marking')
+pdf_path = os.path.join(os.path.dirname(__file__),'references','marking')
 load_recommender(recommender_1, pdf_path)
 #初始化一个recommender_1， 这个recommender_1负责这个pdf的推荐。你可以使用多个pdf，不过我认为更简单的是把不同的材料都集中到一个pdf中，然后用一个recommender.
 
