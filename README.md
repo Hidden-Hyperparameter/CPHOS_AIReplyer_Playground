@@ -42,7 +42,7 @@ CPHOS技术组之前结合我们后台数据库的模式，对mysql语句进行�
 具体的每个api的文档，请参考`db_api_doc.pdf`。有一个样例叫做`example_dbapi.py`，可以使用
 
 ```shell
-python example_dbapi.py
+python -m your_folder_name.example_dbapi
 ```
 
 运行。
@@ -54,7 +54,7 @@ python example_dbapi.py
 可以通过调整search_pdf_utils.py中的batch, n_neighbors, word_length参数来调整返回的列表中每一个搜索结果的长度、搜索结果的个数。具体可以参考代码以及详细的注释是`example_searchpdf.py`，你可以在配置好环境之后直接用：
 
 ```shell
-python example_searchpdf.py
+python -m your_folder_name.example_searchpdf
 ```
 
 去运行它。请仔细阅读该样例的代码以及注释、运行结果。
@@ -64,7 +64,7 @@ python example_searchpdf.py
 具体可以参考代码以及详细的注释是`example_glm.py`，你可以用
 
 ```shell
-python example_glm.py
+python -m your_folder_name.example_glm
 ```
 
 来运行它。请仔细阅读该样例的代码以及注释、运行结果。
@@ -74,7 +74,7 @@ python example_glm.py
 具体可以参考代码以及详细的注释是`example_gpt.py`，你可以用
 
 ```shell
-python example_gpt.py
+python -m your_folder_name.example_gpt
 ```
 
 来运行它。请仔细阅读该样例的代码以及注释、运行结果。
@@ -94,7 +94,7 @@ python example_gpt.py
 **测试时，直接用：**
 
 ```shell
-python test.py
+python -m your_folder_name.test
 ```
 
 **即可将回答结果输出在`answers.txt`文件中。**
